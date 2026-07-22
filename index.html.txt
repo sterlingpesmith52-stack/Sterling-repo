@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Widget Demo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+  }
+  #container {
+    max-width: 600px;
+    margin: auto;
+  }
+  button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+  #prompt, #response {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  #response {
+    height: 180px;
+  }
+  #status {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #555;
+  }
+</style>
+</head>
+
+<body>
+<div id="container">
+
+  <h2>AI Widget Demo</h2>
+
+  <button onclick="setOperation('Add')">Add</button>
+  <button onclick="setOperation('Update')">Update</button>
+  <button onclick="setOperation('Delete')">Delete</button>
+  <button onclick="setOperation('Query')">Query</button>
+
+  <p>Operation: <span id="operation">None</span></p>
+
+  <input id="prompt" placeholder="Enter prompt here">
+
+  <div style="margin-top:10px;">
+    <button onclick="submitToAI()">Run</button>
+  </div>
+
+  <div id="status"></div>
+
+  <textarea id="response" placeholder="Response will appear here"></textarea>
+
+</div>
+
+<script>
+  let widgetState = {
+    operation: null,
+    prompt: "",
+    response: ""
+  };
+
+  function setOperation(op) {
+    widgetState.operation = op;
+    document.getElementById("operation").innerText = op;
+  }
+
+  async function submitToAI() {
+    const opSpan = document.getElementById("operation");
+    const promptInput = document.getElementById("prompt");
+    const responseBox = document.getElementById("response");
+    const status = document.getElementById("status");
+
+    const operation = opSpan.innerText;
+    const prompt = promptInput.value.trim();
+
+    if (!operation || operation === "None") {
+      status.innerText = "Select an operation first.";
+      return;
+    }
+
+    if (!prompt) {
+      status.innerText = "Enter a prompt before running.";
+      return;
+    }
+
+    status.innerText = "Sending to AI...";
+    responseBox.value = "";
+
+    // Update local state
+    widgetState.operation = operation;
+    widgetState.prompt = prompt;
+
+    try {
+      // TODO: replace this URL with your real AI endpoint
+      const apiUrl = "https://your-ai-endpoint.example.com/run";
+
+      const body = {
+        operation: widgetState.operation,
+        prompt: widgetState.prompt
+      };
+
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+          // Add auth headers here if needed
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
+
+      const data = await res.json();
+
+      // Adjust this depending on your API’s response shape
+      const aiText = data.result || data.output || JSON.stringify(data, null, 2);
+
+      widgetState.response = aiText;
+      responseBox.value = aiText;
+      status.innerText = "Done.";
+    } catch (err) {
+      status.innerText = "Error talking to AI: " + err.message;
+      responseBox.value = "";
+    }
+  }
+</script>
+
+</body>
+</html>
