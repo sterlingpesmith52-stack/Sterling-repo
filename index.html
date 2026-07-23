@@ -2,47 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AI Widget Demo</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 0;
-  }
-  #container {
-    max-width: 600px;
-    margin: auto;
-  }
-  button {
-    margin: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-  }
-  #prompt, #response {
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 16px;
-  }
-  #response {
-    height: 180px;
-  }
-  #status {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #555;
-  }
-</style>
-</head>
-
-<body>
-<div id="container">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
 <title>AI Transforms</title>
-<style>
+ <style>
   body {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -70,19 +31,35 @@
 </head>
 
 <body>
+<div id="container"> <script>
+    // Current mode
+    let mode = "Prompt";
+
+    // List of modes
+    const modes = ["Prompt", "History", "Clear"];
+
+    // Mode button logic
+    document.getElementById("modeButton").addEventListener("click", () => {
+        const index = modes.indexOf(mode);
+        mode = modes[(index + 1) % modes.length];
+        document.getElementById("modeButton").innerText = `Mode: ${mode}`;
+        runMode(mode);
+    });
+
+    // Mode handler
+    function runMode(currentMode) {
+        if (currentMode === "Prompt") {
+            document.getElementById("output").innerText = "Prompt mode fired.";
+        }
+
+        if (currentMode === "History") {
+            document.getElementById("output").innerText = "History mode fired.";
+        }
+
+        if (currentMode === "Clear") {
+            document.getElementById("output").innerText = "";
+        }
 <div id="container">
-
-  <h2>AI Widget Demo</h2>
-
-  <button onclick="setOperation('Add')">Add</button>
-  <button onclick="setOperation('Update')">Update</button>
-  <button onclick="setOperation('Delete')">Delete</button>
-  <button onclick="setOperation('Query')">Query</button>
-
-  <p>Operation: <span id="operation">None</span></p>
-
-  <input id="prompt" placeholder="Enter prompt here">
-
   <div style="margin-top:10px;">
     <button onclick="submitToAI()">Run</button>
   </div>
@@ -120,6 +97,19 @@
       output.innerText = "Enter a prompt before running.";
       return;
     }
+
+
+  <h2>AI Widget Demo</h2>
+
+  <button onclick="setOperation('Add')">Add</button>
+  <button onclick="setOperation('Update')">Update</button>
+  <button onclick="setOperation('Delete')">Delete</button>
+  <button onclick="setOperation('Query')">Query</button>
+
+  <p>Operation: <span id="operation">None</span></p>
+
+  <input id="prompt" placeholder="Enter prompt here">
+
 
     output.innerText = "Sending to AI...";
     responseBox.value = "";
