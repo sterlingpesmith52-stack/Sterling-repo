@@ -66,11 +66,6 @@
   #response {
     height: 180px;
   }
-  #status {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #555;
-  }
 </style>
 </head>
 
@@ -92,8 +87,6 @@
     <button onclick="submitToAI()">Run</button>
   </div>
 
-  <div id="status"></div>
-
   <textarea id="response" placeholder="Response will appear here"></textarea>
 
 </div>
@@ -111,25 +104,24 @@
   }
 
   async function submitToAI() {
-    const opSpan = document.getElementById("operation");
+    const opMode = document.getElementById("Mode");
     const promptInput = document.getElementById("prompt");
     const responseBox = document.getElementById("response");
-    const status = document.getElementById("status");
 
     const operation = opSpan.innerText;
     const prompt = promptInput.value.trim();
 
     if (!operation || operation === "None") {
-      status.innerText = "Select an operation first.";
+      output.innerText = "Select an operation first.";
       return;
     }
 
     if (!prompt) {
-      status.innerText = "Enter a prompt before running.";
+      output.innerText = "Enter a prompt before running.";
       return;
     }
 
-    status.innerText = "Sending to AI...";
+    output.innerText = "Sending to AI...";
     responseBox.value = "";
 
     // Update local state
@@ -138,8 +130,7 @@
 
     try {
       // TODO: replace this URL with your real AI endpoint
-      const apiUrl = "https://your-ai-endpoint.example.com/run";
-
+      const apiUrl = "https://my-ai-service.com/api/run";
       const body = {
         operation: widgetState.operation,
         prompt: widgetState.prompt
