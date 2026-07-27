@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Transforms</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  #container {
+    max-width: 600px;
+    margin: auto;
+  }
+  button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+  #prompt, #response {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  #response {
+    height: 180px;
+  }
+</style>
+</head>
+
+<body>
+<div id="container">
+
+  <h2>AI Widget Demo</h2>
+
+  <!-- MODE BUTTON -->
+  <button id="modeButton">Mode: Normal</button>
+
+  <!-- CLEAR BUTTON -->
+  <button id="clearButton">Clear</button>
+
+  <!-- PROMPT INPUT -->
+  <input id="prompt" placeholder="Enter prompt here">
+
+  <!-- RESPONSE BOX -->
+  <textarea id="response" placeholder="Response will appear here"></textarea>
+
+</div>
+
+<script>
+  // -------------------------
+  // MODE SYSTEM
+  // -------------------------
+
+  let mode = "Normal";
+  const modes = ["Normal", "Explain", "Short", "Creative", "AI"];
+
+  document.getElementById("modeButton").addEventListener("click", () => {
+    const index = modes.indexOf(mode);
+    mode = modes[(index + 1) % modes.length];
+
+    document.getElementById("modeButton").innerText = `Mode: ${mode}`;
+    runMode(mode);   // AUTO-RUN LOGIC
+  });
+
+  // -------------------------
+  // MODE LOGIC (REAL TRANSFORMS)
+  // -------------------------
+
+  function runMode(currentMode) {
+    const promptText = document.getElementById("prompt").value.trim();
+    const responseBox = document.getElementById("response");
+
+    if (!promptText) {
+      responseBox.value = "";
+      return;
+    }
+
+    let result = "";
+
+    if (currentMode === "Normal") {
+      result = promptText;
+    }
+
+    if (currentMode === "Explain") {
+      result = "Explanation: " + promptText + " means something important. Here is a clearer version: " +
+               promptText + ".";
+    }
+
+    if (currentMode === "Short") {
+      result = "Short: " + promptText.split(" ").slice(0, 5).join(" ") + "...";
+    }
+
+    if (currentMode === "Creative") {
+      result = "Creative rewrite: Imagine this idea transformed — " + promptText +
+               " — now expressed with color, emotion, and flair.";
+    }
+
+    if (currentMode === "AI") {
+      result = "AI response: " + promptText + " → This is a natural AI-style interpretation.";
+    }
+
+    responseBox.value = result;
+  }
+
+  // -------------------------
+  // CLEAR BUTTON
+  // -------------------------
+
+  document.getElementById("clearButton").addEventListener("click", () => {
+    document.getElementById("prompt").value = "";
+    document.getElementById("response").value = "";
+
+    mode = "Normal";
+    document.getElementById("modeButton").innerText = "Mode: Normal";
+
+    runMode("Normal");
+  });
+</script>
+
+</body>
+</html>
 
