@@ -7,27 +7,75 @@
 
 <style>
   body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
-  #container {
-    max-width: 600px;
-    margin: auto;
-  }
-  button {
-    margin: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-  }
-  #prompt, #response {
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 16px;
-  }
-  #response {
-    height: 180px;
-  }
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+#container {
+  max-width: 600px;
+  margin: auto;
+}
+
+/* 3D BUTTONS */
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+
+  background: linear-gradient(#f0f0f0, #d0d0d0);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+
+  transition: all 0.15s ease;
+}
+
+button:hover {
+  box-shadow: 0 6px 10px rgba(0,0,0,0.30);
+  transform: translateY(-2px);
+}
+
+button:active {
+  box-shadow: 0 2px 3px rgba(0,0,0,0.20);
+  transform: translateY(1px);
+}
+
+/* 3D PROMPT BOX */
+#prompt {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+
+  background: linear-gradient(#ffffff, #f3f3f3);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.15),
+    0 4px 6px rgba(0,0,0,0.20);
+}
+
+/* READ-ONLY RESPONSE BOX */
+#response {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+  height: 180px;
+
+  background: #f7f7f7;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+
+  color: #555;
+  cursor: not-allowed;
+
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.20),
+    0 3px 5px rgba(0,0,0,0.15);
+}
+
 </style>
 </head>
 
