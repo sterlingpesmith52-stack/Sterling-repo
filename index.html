@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,3 +94,94 @@
       0 1px 2px rgba(0,0,0,0.12);
   }
 
+  #copyButton {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+</style>
+</head>
+
+<body>
+<div id="container">
+
+  <h2>AI Widget Demo</h2>
+
+  <button id="modeButton">Mode: Normal</button>
+  <button id="clearButton">Clear</button>
+
+  <input id="prompt" placeholder="Enter prompt here">
+
+  <textarea id="response" readonly placeholder="Response will appear here"></textarea>
+  <button id="copyButton">Copy Response</button>
+
+</div>
+
+<script>
+  let mode = "Normal";
+  const modes = ["Normal", "Explain", "Short", "Creative", "AI"];
+
+  document.getElementById("modeButton").addEventListener("click", () => {
+    const index = modes.indexOf(mode);
+    mode = modes[(index + 1) % modes.length];
+
+    document.getElementById("modeButton").innerText = `Mode: ${mode}`;
+    runMode(mode);
+  });
+
+  function runMode(currentMode) {
+    const promptText = document.getElementById("prompt").value.trim();
+    const responseBox = document.getElementById("response");
+
+    if (!promptText) {
+      responseBox.value = "";
+      return;
+    }
+
+    let result = "";
+
+    if (currentMode === "Normal") {
+      result = promptText;
+    }
+
+    if (currentMode === "Explain") {
+      result = "Explanation: " + promptText + " means something important. Here is a clearer version: " +
+               promptText + ".";
+    }
+
+    if (currentMode === "Short") {
+      result = "Short: " + promptText.split(" ").slice(0, 5).join(" ") + "...";
+    }
+
+    if (currentMode === "Creative") {
+      result = "Creative rewrite: Imagine this idea transformed — " + promptText +
+               " — now expressed with color, emotion, and flair.";
+    }
+
+    if (currentMode === "AI") {
+      result = "AI response: " + promptText + " → This is a natural AI-style interpretation.";
+    }
+
+    responseBox.value = result;
+  }
+
+  document.getElementById("clearButton").addEventListener("click", () => {
+    document.getElementById("prompt").value = "";
+    document.getElementById("response").value = "";
+
+    mode = "Normal";
+    document.getElementById("modeButton").innerText = "Mode: Normal";
+
+    runMode("Normal");
+  });
+
+  document.getElementById("copyButton").addEventListener("click", () => {
+    const text = document.getElementById("response").value;
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+  });
+</script>
+
+</body>
+</html>
