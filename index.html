@@ -1,1 +1,209 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Widget</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  width: 90%;
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+#prompt, #output {
+  width: 100%;
+  height: 180px;
+  margin: 20px 0;
+  padding: 14px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+#prompt {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+}
+
+#output {
+  background: #f0f0f0;
+  color: #555;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  cursor: default;
+  user-select: none;
+}
+
+button {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-right: 10px;
+}
+
+button:hover {
+  background: #e8e8e8;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  transform: translateY(-2px);
+}
+
+button:active {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transform: translateY(0);
+}
+
+#buttonRow, #actionRow {
+  margin: 10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="container">
+
+  <h2>Widget</h2>
+
+  <label>Type:</label>
+  <input id="modeDisplay" type="text" readonly value="type">
+
+  <div id="buttonRow">
+    <button id="typeBtn">Type</button>
+    <button id="explainBtn">Explain</button>
+    <button id="summarizeBtn">Summarize</button>
+    <button id="creativeBtn">Creative</button>
+  </div>
+
+  <textarea id="prompt" spellcheck="false" placeholder="Enter text here..."></textarea>
+
+  <div id="actionRow">
+    <button id="runBtn">Run</button>
+    <button id="clearBtn">Clear</button>
+    <button id="copyBtn">Copy</button>
+    <button id="pasteBtn">Paste</button>
+    <button id="voiceBtn">Voice</button>
+  </div>
+
+  <textarea id="output" spellcheck="false" readonly></textarea>
+
+</div>
+
+<script>
+let currentMode = "type";
+const promptBox = document.getElementById("prompt");
+const outputBox = document.getElementById("output");
+
+// Prevent context menu in output
+outputBox.addEventListener("contextmenu", e => e.preventDefault());
+
+// MODE SWITCHING
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById("modeDisplay").value = mode;
+}
+
+document.getElementById("typeBtn").onclick = () => setMode("type");
+document.getElementById("explainBtn").onclick = () => setMode("explain");
+document.getElementById("summarizeBtn").onclick = () => setMode("summarize");
+document.getElementById("creativeBtn").onclick = () => setMode("creative");
+
+// TRANSFORM FUNCTIONS (placeholder logic)
+function explainText(text) { return text; }
+function summarizeText(text) { return text; }
+function creativeRewrite(text) { return text; }
+
+// RUN BUTTON
+document.getElementById("runBtn").onclick = () => {
+  const input = promptBox.value;
+
+  if (currentMode === "explain") {
+    outputBox.value = explainText(input);
+  } else if (currentMode === "summarize") {
+    outputBox.value = summarizeText(input);
+  } else if (currentMode === "creative") {
+    outputBox.value = creativeRewrite(input);
+  } else {
+    outputBox.value = input;
+  }
+};
+
+// CLEAR
+document.getElementById("clearBtn").onclick = () => {
+  promptBox.value = "";
+  outputBox.value = "";
+};
+
+// CLIPBOARD PERMISSIONS
+async function ensureClipboardPermission() {
+  try {
+    await navigator.permissions.query({ name: "clipboard-read" });
+    await navigator.permissions.query({ name: "clipboard-write" });
+  } catch (e) {
+    // iOS fallback — silently ignore
+  }
+}
+ensureClipboardPermission();
+
+// COPY
+document.getElementById("copyBtn").onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(outputBox.value);
+  } catch (e) {}
+};
+
+// PASTE
+document.getElementById("pasteBtn").onclick = async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    promptBox.value = text;
+  } catch (e) {}
+};
+
+// VOICE INPUT
+let recognition;
+function initVoice() {
+  try {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = event => {
+      promptBox.value = event.results[0][0].transcript;
+    };
+  } catch (e) {
+    recognition = null;
+  }
+}
+initVoice();
+
+// MICROPHONE PERMISSION
+async function ensureMicPermission() {
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (e) {}
+}
+ensureMicPermission();
+
+// VOICE BUTTON
+document.getElementById("voiceBtn").onclick = () => {
+  if (recognition) recognition.start();
+};
+</script>
+
+</body>
+</html>
