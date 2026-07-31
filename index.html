@@ -1,1 +1,138 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mode Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        header {
+            background-color: #4a90e2;
+            padding: 10px;
+            text-align: center;
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        #buttonBar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #ddd;
+            border-bottom: 2px solid #ccc;
+        }
+
+        #buttonBar button {
+            padding: 10px 14px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            background-color: #4a90e2;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        #buttonBar button:hover {
+            background-color: #357ABD;
+        }
+
+        #modeDisplay {
+            margin: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #inputArea {
+            width: 90%;
+            margin: 0 auto;
+            display: block;
+            height: 200px;
+            font-size: 1.1em;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body>
+    <header>Mode Interface</header>
+
+    <div id="buttonBar">
+        <button id="typeBtn">Type</button>
+        <button id="modeDisplayBtn">Mode Display</button>
+        <button id="clearBtn">Clear</button>
+        <button id="pasteBtn">Paste</button>
+        <button id="copyBtn">Copy</button>
+        <button id="darkModeBtn">Dark Mode</button>
+        <button id="voiceBtn">Voice</button>
+    </div>
+
+    <div id="modeDisplay">Current Mode: Type</div>
+
+    <textarea id="inputArea" placeholder="Type here..."></textarea>
+
+    <script>
+        const modeDisplay = document.getElementById("modeDisplay");
+        const inputArea = document.getElementById("inputArea");
+
+        document.getElementById("typeBtn").onclick = () => {
+            modeDisplay.textContent = "Current Mode: Type";
+        };
+
+        document.getElementById("modeDisplayBtn").onclick = () => {
+            alert("Mode Display is active and synced.");
+        };
+
+        document.getElementById("clearBtn").onclick = () => {
+            if (confirm("Clear all text?")) {
+                inputArea.value = "";
+            }
+        };
+
+        document.getElementById("pasteBtn").onclick = async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                inputArea.value += text;
+            } catch (err) {
+                alert("Paste failed.");
+            }
+        };
+
+        document.getElementById("copyBtn").onclick = async () => {
+            try {
+                await navigator.clipboard.writeText(inputArea.value);
+                alert("Copied!");
+            } catch (err) {
+                alert("Copy failed.");
+            }
+        };
+
+        document.getElementById("darkModeBtn").onclick = () => {
+            document.body.classList.toggle("dark-mode");
+        };
+
+        document.getElementById("voiceBtn").onclick = () => {
+            alert("Voice mode is not yet connected.");
+        };
+    </script>
+</body>
+</html>
