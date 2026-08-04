@@ -120,6 +120,7 @@
       margin-top: 4px;
     }
 
+    /* ⭐ Enhanced Dark Mode */
     .dark-mode body,
     .dark-mode .app {
       background-color: #1e1e1e;
@@ -137,12 +138,14 @@
       background-color: #333333;
       border-color: #555555;
       color: #f5f5f5;
+      box-shadow: none;
     }
 
     .dark-mode .mode-box {
       background-color: #2b2b2b;
       border-color: #555555;
       color: #f5f5f5;
+      box-shadow: none;
     }
 
     .dark-mode .button {
@@ -150,9 +153,11 @@
       box-shadow:
         0 3px 0 #244ba3,
         0 6px 12px rgba(0, 0, 0, 0.6);
+      color: #f5f5f5;
     }
 
     .dark-mode .button:active {
+      transform: translateY(2px);
       box-shadow:
         0 1px 0 #244ba3,
         0 3px 6px rgba(0, 0, 0, 0.6),
@@ -160,9 +165,11 @@
     }
   </style>
 </head>
+
 <body>
   <div class="app">
-    <!-- ROW 1: Type, Mode Box, Clear, Paste -->
+
+    <!-- ⭐ ROW 1: Type, Mode Box, Clear, Paste -->
     <div class="row">
       <span class="mode-label">Type:</span>
       <button id="typeButton" class="button">Type</button>
@@ -171,17 +178,17 @@
       <button id="pasteButton" class="button">Paste</button>
     </div>
 
-    <!-- ROW 2: Prompt textarea -->
+    <!-- ⭐ ROW 2: Prompt textarea -->
     <div class="row">
       <textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
     </div>
 
-    <!-- ROW 3: Output textarea -->
+    <!-- ⭐ ROW 3: Output textarea -->
     <div class="row">
       <textarea id="output" readonly placeholder="Output will appear here..."></textarea>
     </div>
 
-    <!-- ROW 4: Copy, Dark Mode, Voice -->
+    <!-- ⭐ ROW 4: Copy, Dark Mode, Voice -->
     <div class="row">
       <button id="copyButton" class="button">Copy</button>
       <button id="darkModeButton" class="button">Dark Mode</button>
@@ -195,7 +202,7 @@
   </div>
 
   <script>
-    // Mode system
+    // ⭐ Mode system
     const modes = [
       "Start here",
       "Instructions",
@@ -219,7 +226,7 @@
     const promptEl = document.getElementById("prompt");
     const outputEl = document.getElementById("output");
 
-    // Permission state
+    // ⭐ Permission state
     const permissionState = {
       clipboardReadGranted: false,
       clipboardWriteGranted: false,
@@ -232,22 +239,18 @@
         permissionState.clipboardReadGranted = !!stored.clipboardReadGranted;
         permissionState.clipboardWriteGranted = !!stored.clipboardWriteGranted;
         permissionState.micGranted = !!stored.micGranted;
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     }
 
     function savePermissionState() {
       try {
         localStorage.setItem("sterling_permissions", JSON.stringify(permissionState));
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     }
 
     loadPermissionState();
 
-    // Mode cycling
+    // ⭐ Mode cycling
     function updateModeBox() {
       modeBox.textContent = modes[currentModeIndex];
     }
@@ -259,17 +262,17 @@
 
     updateModeBox();
 
-    // Clear: prompt + history + output
+    // ⭐ Clear
     clearButton.addEventListener("click", () => {
       promptEl.value = "";
       outputEl.value = "";
       history = [];
     });
 
-    // Paste: clipboard -> prompt
+    // ⭐ Paste
     pasteButton.addEventListener("click", async () => {
       if (!navigator.clipboard || !navigator.clipboard.readText) {
-        alert("Clipboard read is not available in this browser.");
+        alert("Clipboard read is not available.");
         return;
       }
 
@@ -279,16 +282,15 @@
         savePermissionState();
         promptEl.value = text;
       } catch (err) {
-        // First-time or denied permission
-        alert("Unable to read from clipboard. Please allow clipboard access.");
+        alert("Unable to read clipboard. Please allow clipboard access.");
       }
     });
 
-    // Copy: output -> clipboard
+    // ⭐ Copy
     copyButton.addEventListener("click", async () => {
       const text = outputEl.value || "";
       if (!navigator.clipboard || !navigator.clipboard.writeText) {
-        alert("Clipboard write is not available in this browser.");
+        alert("Clipboard write is not available.");
         return;
       }
 
@@ -301,7 +303,7 @@
       }
     });
 
-    // Dark mode toggle
+    // ⭐ Dark Mode toggle
     let darkMode = false;
     darkModeButton.addEventListener("click", () => {
       darkMode = !darkMode;
@@ -314,10 +316,10 @@
       }
     });
 
-    // Voice (stubbed with permission handling)
+    // ⭐ Voice (stub)
     voiceButton.addEventListener("click", async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert("Microphone access is not available in this browser.");
+        alert("Microphone access not available.");
         return;
       }
 
@@ -327,42 +329,40 @@
         savePermissionState();
         alert("Voice feature placeholder: microphone permission granted.");
       } catch (err) {
-        alert("Microphone access denied. Please allow microphone permission.");
+        alert("Microphone access denied.");
       }
     });
 
-    // Simple mode-based behavior stub (you can expand later)
+    // ⭐ Mode behavior
     promptEl.addEventListener("input", () => {
       const mode = modes[currentModeIndex];
       const text = promptEl.value;
 
-      // Very simple illustrative behavior
       if (mode === "Summary") {
         outputEl.value = text.length
-          ? "Summary mode: (placeholder summary)\n\n" + text.slice(0, 200)
+          ? "Summary mode:\n\n" + text.slice(0, 200)
           : "";
       } else if (mode === "Instructions") {
         outputEl.value = text.length
-          ? "Instructions mode: (placeholder instructions)\n\n1. Read input\n2. Think\n3. Respond"
+          ? "Instructions mode:\n\n1. Read input\n2. Think\n3. Respond"
           : "";
       } else if (mode === "Explain") {
         outputEl.value = text.length
-          ? "Explain mode: (placeholder explanation)\n\n" + text
+          ? "Explain mode:\n\n" + text
           : "";
       } else if (mode === "Creative") {
         outputEl.value = text.length
-          ? "Creative mode: (placeholder creative output)\n\nImagine this as a story: " + text
+          ? "Creative mode:\n\nImagine this as a story: " + text
           : "";
       } else if (mode === "AI") {
         outputEl.value = text.length
-          ? "AI mode: (placeholder AI-style response)\n\n" + text
+          ? "AI mode:\n\n" + text
           : "";
       } else if (mode === "History") {
         outputEl.value = history.join("\n---\n");
       } else {
-        // Start here
         outputEl.value = text.length
-          ? "Start here mode: (placeholder guidance)\n\nYou typed:\n" + text
+          ? "Start here mode:\n\nYou typed:\n" + text
           : "";
       }
 
